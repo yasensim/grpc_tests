@@ -23,7 +23,8 @@ func main() {
 	//	fmt.Printf("Created client: %f", c)
 	//	doUnary(c)
 	// doServerStreaming(c)
-	doClientStreaming(c)
+	// doClientStreaming(c)
+	doBiDiStreaming(c)
 }
 func doUnary(c greetpb.GreetServiceClient) {
 	fmt.Println("Starting to do Unary gRPC")
@@ -107,4 +108,65 @@ func doClientStreaming(c greetpb.GreetServiceClient) {
 		log.Fatalf("Error while reveiving response from LongGreet: %v", err)
 	}
 	fmt.Printf("LongGreet Response: %v\n", res)
+}
+
+func doBiDiStreaming(c greetpb.GreetServiceClient) {
+	fmt.Println("Starting to do BiDir Streaming gRPC")
+	// create a stream by invoking the client
+	stream, err := c.GreetEveryone(context.Background())
+	if err != nil {
+		log.Fatalf("Error while create a stream: %v", err)
+	}
+	requests := []*greetpb.GreetEveryoneRequest{
+		&greetpb.GreetEveryoneRequest{
+			Greeting: &greetpb.Greeting{
+				FirstName: "Yasen",
+			},
+		},
+		&greetpb.GreetEveryoneRequest{
+			Greeting: &greetpb.Greeting{
+				FirstName: "Petya",
+			},
+		},
+		&greetpb.GreetEveryoneRequest{
+			Greeting: &greetpb.Greeting{
+				FirstName: "Marto",
+			},
+		},
+		&greetpb.GreetEveryoneRequest{
+			Greeting: &greetpb.Greeting{
+				FirstName: "Vladi",
+			},
+		},
+	}
+	// create wait channel to block bellow
+	waitc := make(chan struct{})
+	// send a bunch of meessages (go routine)
+	go func() {
+		for _, req := range requests {
+			fmt.Printf("Sending message: %v\n", req)
+			stream.Send(req)
+			time.Sleep(1000 * time.Millisecond)
+		}
+		stream.CloseSend()
+	}()
+	// Receive a bunch of meessages (go routine)
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatalf("Error while receiving a stream: %v", err)
+				break
+			}
+			fmt.Printf("Recieved: %v \n ", res.GetResult())
+			//			time.Sleep(3000 * time.Millisecond)
+		}
+		close(waitc)
+	}()
+	// Block until everything is done
+	<-waitc
+
 }
