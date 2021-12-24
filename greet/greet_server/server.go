@@ -33,6 +33,7 @@ func (*server) GreetManyTimes(req *greetpb.GreetManyTimesRequest, stream greetpb
 		res := &greetpb.GreetManytimesResponse{
 			Result: result,
 		}
+		fmt.Printf("Sent: %v!!! \n", res)
 		stream.Send(res)
 		time.Sleep(1000 * time.Millisecond)
 	}
