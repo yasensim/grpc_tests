@@ -24,29 +24,29 @@ message GreetManytimesResponse {
     string result = 1;
 }
 
-message LongGreetRequest {
-    Greeting greeting = 1;
-}
+// message LongGreetRequest {
+//     Greeting greeting = 1;
+// }
 
-message LongGreetResponse {
-    string result = 1;
-}
+// message LongGreetResponse {
+//     string result = 1;
+// }
 
-message GreetEveryoneRequest {
-    Greeting greeting = 1;
-}
+// message GreetEveryoneRequest {
+//     Greeting greeting = 1;
+// }
 
-message GreetEveryoneResponse {
-    string result = 1;
-}
+// message GreetEveryoneResponse {
+//     string result = 1;
+// }
 
-message GreetWithDeadlineRequest {
-    Greeting greeting = 1;
-}
+// message GreetWithDeadlineRequest {
+//     Greeting greeting = 1;
+// }
 
-message GreetWithDeadlineResponse {
-    string result = 1;
-}
+// message GreetWithDeadlineResponse {
+//     string result = 1;
+// }
 
 service GreetService{
     // Unary
@@ -56,12 +56,12 @@ service GreetService{
     rpc GreetManyTimes(GreetManyTimesRequest) returns (stream GreetManytimesResponse) {};
 
     // Client Streaming
-    rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
+ //   rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
 
     // BiDi Streaming
-    rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
+ //   rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
 
     // Unary With Deadline
-    rpc GreetWithDeadline(GreetWithDeadlineRequest) returns (GreetWithDeadlineResponse) {};
+ //   rpc GreetWithDeadline(GreetWithDeadlineRequest) returns (GreetWithDeadlineResponse) {};
 
 }
